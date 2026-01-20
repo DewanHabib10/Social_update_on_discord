@@ -1,0 +1,29 @@
+name: Check Social Media
+
+on:
+  schedule:
+    # Runs every 10 minutes (GitHub Actions minimum interval is often ~5-10 mins)
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allows you to run it manually to test
+
+jobs:
+  run_bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Feed Checker
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+        run: python main.py
